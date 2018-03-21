@@ -1,9 +1,49 @@
 /*==============================================================================
-  
-  
-  
-  
+Zachary Hadjah                    March 21st 2018
+Junior Year                       Data Structures/ Algorithm Analysis
+
+This program contains two classes, Student and Course,  that will allow the user
+to analyze the performance of students in a particular course. 
  
+ *Student Class will contain private data members consisting of the students 
+  information (name, grades, letter grade, etc) 
+    -Student() will construct the course
+    -get_student_scores() will  obtain the student's name, project grades, two
+     exam grades, five quiz grades, and the final exam grade from the user. 
+    -compute_student_stats() will  compute a students project average, the exam 
+     average, the quiz average, and the semester average. The semester average 
+     will be rounded to the nearest tenth. 
+    -determine_student_grade() will determine the student letter grade in the
+     course.
+    -display_student_name_gpa_grade() will display a student’s name, semester 
+     average, and letter grade to both the screen and to the external text file, 
+     "student.txt"
+    -student_average() will return the student’s semester average.
+         
+ *Course Class will act as part of the program that will manage the entire 
+  class accordingly. 
+    -Course() will initialize the data members, excluding the objects of Class 
+     Student       
+    -~Course() will dealloct the Course object
+    -get_grades() will get the student grades for the course by calling the
+     get_student_scores() public member function of the Student class to get the
+     grades of each student.
+    -evaluate_class() will, for each student object, compute the student's stats
+     using compute_student_stats(), and  determine the student's grade using
+     determine_student_grade().
+    -determine_index_of_highest_lowest() will determine the subscript of the 
+     student who has the highest semester average and the subscript of the
+     student who has the lowest semester average and set each of these 
+     subscripts appropriately.      
+    -display_highest() will send to both the screen and to the external text 
+     file, "student.txt ", the name, semester average and grade of the student 
+     who has the highest semester average.
+    -display_lowest() will send to both the display and to the external text 
+     file, "student.txt ", the name, semester average, and grade of the student
+     who has the lowest semester average
+    -display_stats() will display to both the screen and to an external text 
+     file, "student.txt ", the name, semester average, and letter grade for each
+     student in the course.
  =============================================================================*/
 #include <cstdlib>
 #include <cmath>
@@ -11,13 +51,13 @@
 #include <iostream>
 #include <iomanip>
 #include <limits>
-
+#include <fstream>
+#include <string>
 using namespace std;
-
 class Student
 {
      private:
-        char name[20];
+        string name;
         int project[6];
         int exam[2];
         int quiz[5];
@@ -26,7 +66,7 @@ class Student
         double quiz_avg;
         int finalExam;
         double average;
-        char grade[3];
+        string grade;
      public: 
         Student();
         void get_student_scores();
@@ -38,24 +78,22 @@ class Student
  
 Student::Student()
 {
-    //name = " ";
+    name = " ";
     
-    for(int i = 0; i<sizeof(project); i++)
+    for(int i = 0; i<6; i++)
         project[i] = 0;
     
-    for(int i = 0; i<sizeof(exam); i++)
+    for(int i = 0; i<2; i++)
         exam[i] = 0;
     
-    for(int i = 0; i<sizeof(quiz); i++)
+    for(int i = 0; i<5; i++)
         quiz[i] = 0;
         
     average, project_avg, exam_avg, quiz_avg = 0;
     
     finalExam = 0;
     
-    for(int i = 0; i<sizeof(grade); i++)
-        grade[i] = 0;
-    
+        grade = " ";
 }
 
 void Student::get_student_scores()
@@ -66,25 +104,25 @@ void Student::get_student_scores()
         cout << "\n Enter Student Name: \n";
         cin>>name;
 
-        for(int i = 0; i<sizeof(project); i++)
+        for(int i = 0; i<6; i++)
         {
-            cout<<"Enter Student project grade #"<<i<<"\n";
+            cout<<"Enter Student project grade #"<<i<<":\n";
             cin>>project[i];
         }
 
-        for(int i = 0; i<sizeof(exam); i++)
+        for(int i = 0; i<2; i++)
         {
-            cout<<"Enter Student exam grade #"<<i<<"\n";
+            cout<<"Enter Student exam grade #"<<i<<":\n";
             cin>>exam[i];
         }
 
-        for(int i = 0; i<sizeof(quiz); i++)
+        for(int i = 0; i<5; i++)
         {
-            cout<<"Enter Student quiz grade #"<<i<<"\n";
+            cout<<"Enter Student quiz grade #"<<i<<":\n";
             cin>>quiz[i];
         }
 
-        cout << "Enter final exam grade";
+        cout << "Enter final exam grade:";
         cin>>finalExam;    
     }
     
@@ -95,6 +133,7 @@ void Student::get_student_scores()
     
         cout<<"Error, invalid input entered. \n";
     }
+    return;
 }
 
 void Student::compute_student_stats()
@@ -102,36 +141,23 @@ void Student::compute_student_stats()
     int sum = 0;
     double projPercentage, examPercentage, quizPercentage, finalPercentage; 
     
-    for(int i = 0; i<sizeof(project); i++)
-    {
-        project[i] += sum; 
-        project_avg = sum/sizeof(project);
-        cout << "Project Average = " << project_avg;
-        sum = 0;
-    }
-    
-    for(int i = 0; i<sizeof(exam); i++)
-    {
-        exam[i] += sum; 
-        exam_avg = sum/sizeof(exam);
-        cout << "Exam Average = " << exam_avg;
-        sum = 0;
-    }
-    
-    for(int i = 0; i<sizeof(quiz); i++)
-    {
-        quiz[i] += sum; 
-        quiz_avg = sum/sizeof(quiz);
-        cout << "Quiz Average = " << quiz_avg;
-        sum = 0;
-    }
-    
+    for(int i = 0; i<6; i++)
+        sum += project[i]; 
+    project_avg = sum/6;
     projPercentage = (project_avg/100) * (25/100);
     projPercentage *= 100;
-    
+    sum = 0;
+
+    for(int i = 0; i<2; i++)
+        sum += exam[i]; 
+    exam_avg = sum/2;
     examPercentage = (exam_avg/100) * (40/100);
     examPercentage *= 100;
+    sum = 0;
     
+    for(int i = 0; i<5; i++)
+        sum += quiz[i]; 
+    quiz_avg = sum/5;
     quizPercentage = (quiz_avg/100) * (10/100);
     quizPercentage *= 100;
     
@@ -141,71 +167,77 @@ void Student::compute_student_stats()
     average = projPercentage + examPercentage + quizPercentage + finalPercentage;
     
     cout<<fixed<<showpoint<<setprecision(2);
+    cout << "Quiz Average = " << quiz_avg;
+    cout << "Exam Average = " << exam_avg;
+    cout << "Project Average = " << project_avg;
     cout << "Semester Average = " << average;   
+    return;
 }
+
 void Student::determine_student_grade()
 {
     if(average <= 100 || average >= 93)
     {
-        grade = 'A';
+        grade = "A";
         cout << "Letter Grade = " << grade;
     }
     
     else if(average <= 92 || average >= 89)
     {
-        grade = 'A-';
+        grade = "A-";
         cout << "Letter Grade = " << grade;
     }
     else if(average <= 88 || average >= 87)
     {
-        grade = 'B+';
+        grade = "B+";
         cout << "Letter Grade = " << grade;
     }
     else if(average <= 86 || average >= 83)
     {
-        grade = 'B';
+        grade = "B";
         cout << "Letter Grade = " << grade;
     }
     else if(average <= 82 || average >= 79)
     {
-        grade = 'B-';
+        grade = "B-";
         cout << "Letter Grade = " << grade;
     }
     else if(average <= 78 || average >= 77)
     {
-        grade = 'C+';
+        grade = "C+";
         cout << "Letter Grade = " << grade;
     }
     else if(average <= 76 || average >= 73)
     {
-        grade = 'C';
+        grade = "C";
         cout << "Letter Grade = " << grade;
     }
     else if(average <= 72 || average >= 69)
     {
-        grade = 'C-';
+        grade = "C-";
         cout << "Letter Grade = " << grade;
     }
     else if(average <= 68 || average >= 67)
     {
-        grade = 'D+';
+        grade = "D+";
         cout << "Letter Grade = " << grade;
     }
     else if(average <= 66 || average >= 63)
     {
-        grade = 'D';
+        grade = "D";
         cout << "Letter Grade = " << grade;
     }
     else if(average <= 62 || average >= 57)
     {
-        grade = 'D-';
+        grade = "D-";
         cout << "Letter Grade = " << grade;
     }
     else if(average <= 57)
     {
-        grade = 'F';
+        grade = "F";
         cout << "Letter Grade = " << grade;
     }
+    return;
 }
 void Student::display_student_name_gpa_grade()
 {
@@ -214,26 +246,25 @@ void Student::display_student_name_gpa_grade()
     fstream toFile;
     
     cout<<fixed<<showpoint<<setprecision(2);
-    cout << left << setw(width1) << "Student: " << name;
+    cout << left << setw(width1) << "Student = " << name;
     cout << right << setw(width2) << "Average = " << average;
     cout << right << setw(width2) << "Letter Grade = " << grade;
     
     toFile.open("student.txt",ios::app);
     toFile<<fixed<<showpoint<<setprecision(2);
-    toFile<<left<<setw(width1)<<name;
-    toFile<<right<<setw(width2)<<average;
-    toFile<<right<<setw(width2)<<grade;
-
+    toFile << left << setw(width1) << "Student = " << name;
+    toFile << right << setw(width2) << "Average = " << average;
+    toFile << right << setw(width2) << "Letter Grade = " << grade;
+    toFile.close();
+    return;
 }
 
 double Student::student_average()
 {
-    //round to nearest tenth
+    //remeber to round to nearest tenth in main
     return average;
 }
  
-
-
 class Course
 {
     private:
@@ -262,12 +293,18 @@ Course::~Course()
 }
 void Course::get_grades()
 {
-    
+    for(int i=0; i<7; i++)
+        student[i].get_student_scores();    
+    return;
 }
 
 void Course::evaluate_class()
 {
-    
+    for(int i=0; i<7; i++)
+    {
+        student[i].compute_student_stats();
+    }
+
 }
 
 void Course::determine_index_of_highest_lowest()
