@@ -54,6 +54,10 @@ to analyze the performance of students in a particular course.
 #include <fstream>
 #include <string>
 using namespace std;
+ofstream toFile;
+
+
+
 class Student
 {
      private:
@@ -75,196 +79,7 @@ class Student
         void display_student_name_gpa_grade();
         double student_average();
 };
- 
-Student::Student()
-{
-    name = " ";
-    
-    for(int i = 0; i<6; i++)
-        project[i] = 0;
-    
-    for(int i = 0; i<2; i++)
-        exam[i] = 0;
-    
-    for(int i = 0; i<5; i++)
-        quiz[i] = 0;
-        
-    average, project_avg, exam_avg, quiz_avg = 0;
-    
-    finalExam = 0;
-    
-        grade = " ";
-}
 
-void Student::get_student_scores()
-{
-    //Test try catch heavily
-    try
-    {
-        cout << "\n Enter Student Name: \n";
-        cin>>name;
-
-        for(int i = 0; i<6; i++)
-        {
-            cout<<"Enter Student project grade #"<<i<<":\n";
-            cin>>project[i];
-        }
-
-        for(int i = 0; i<2; i++)
-        {
-            cout<<"Enter Student exam grade #"<<i<<":\n";
-            cin>>exam[i];
-        }
-
-        for(int i = 0; i<5; i++)
-        {
-            cout<<"Enter Student quiz grade #"<<i<<":\n";
-            cin>>quiz[i];
-        }
-
-        cout << "Enter final exam grade:";
-        cin>>finalExam;    
-    }
-    
-    catch(...)
-    {
-        cin.clear(); 
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    
-        cout<<"Error, invalid input entered. \n";
-    }
-    return;
-}
-
-void Student::compute_student_stats()
-{
-    int sum = 0;
-    double projPercentage, examPercentage, quizPercentage, finalPercentage; 
-    
-    for(int i = 0; i<6; i++)
-        sum += project[i]; 
-    project_avg = sum/6;
-    projPercentage = (project_avg/100) * (25/100);
-    projPercentage *= 100;
-    sum = 0;
-
-    for(int i = 0; i<2; i++)
-        sum += exam[i]; 
-    exam_avg = sum/2;
-    examPercentage = (exam_avg/100) * (40/100);
-    examPercentage *= 100;
-    sum = 0;
-    
-    for(int i = 0; i<5; i++)
-        sum += quiz[i]; 
-    quiz_avg = sum/5;
-    quizPercentage = (quiz_avg/100) * (10/100);
-    quizPercentage *= 100;
-    
-    finalPercentage = (finalExam/100) * (25/100) ;
-    finalPercentage *= 100;
-    
-    average = projPercentage + examPercentage + quizPercentage + finalPercentage;
-    
-    cout<<fixed<<showpoint<<setprecision(2);
-    cout << "Quiz Average = " << quiz_avg;
-    cout << "Exam Average = " << exam_avg;
-    cout << "Project Average = " << project_avg;
-    cout << "Semester Average = " << average;   
-    return;
-}
-
-void Student::determine_student_grade()
-{
-    if(average <= 100 || average >= 93)
-    {
-        grade = "A";
-        cout << "Letter Grade = " << grade;
-    }
-    
-    else if(average <= 92 || average >= 89)
-    {
-        grade = "A-";
-        cout << "Letter Grade = " << grade;
-    }
-    else if(average <= 88 || average >= 87)
-    {
-        grade = "B+";
-        cout << "Letter Grade = " << grade;
-    }
-    else if(average <= 86 || average >= 83)
-    {
-        grade = "B";
-        cout << "Letter Grade = " << grade;
-    }
-    else if(average <= 82 || average >= 79)
-    {
-        grade = "B-";
-        cout << "Letter Grade = " << grade;
-    }
-    else if(average <= 78 || average >= 77)
-    {
-        grade = "C+";
-        cout << "Letter Grade = " << grade;
-    }
-    else if(average <= 76 || average >= 73)
-    {
-        grade = "C";
-        cout << "Letter Grade = " << grade;
-    }
-    else if(average <= 72 || average >= 69)
-    {
-        grade = "C-";
-        cout << "Letter Grade = " << grade;
-    }
-    else if(average <= 68 || average >= 67)
-    {
-        grade = "D+";
-        cout << "Letter Grade = " << grade;
-    }
-    else if(average <= 66 || average >= 63)
-    {
-        grade = "D";
-        cout << "Letter Grade = " << grade;
-    }
-    else if(average <= 62 || average >= 57)
-    {
-        grade = "D-";
-        cout << "Letter Grade = " << grade;
-    }
-    else if(average <= 57)
-    {
-        grade = "F";
-        cout << "Letter Grade = " << grade;
-    }
-    return;
-}
-void Student::display_student_name_gpa_grade()
-{
-    const int width1 = 30;
-    const int width2 = 20;
-    fstream toFile;
-    
-    cout<<fixed<<showpoint<<setprecision(2);
-    cout << left << setw(width1) << "Student = " << name;
-    cout << right << setw(width2) << "Average = " << average;
-    cout << right << setw(width2) << "Letter Grade = " << grade;
-    
-    toFile.open("student.txt",ios::app);
-    toFile<<fixed<<showpoint<<setprecision(2);
-    toFile << left << setw(width1) << "Student = " << name;
-    toFile << right << setw(width2) << "Average = " << average;
-    toFile << right << setw(width2) << "Letter Grade = " << grade;
-    toFile.close();
-    return;
-}
-
-double Student::student_average()
-{
-    //remeber to round to nearest tenth in main
-    return average;
-}
- 
 class Course
 {
     private:
@@ -282,10 +97,162 @@ class Course
         void display_stats();
 };
  
+Student::Student()
+{
+    name = "";
+    
+    for(int i = 0; i<6; i++)
+        project[i] = 0;
+    
+    for(int i = 0; i<2; i++)
+        exam[i] = 0;
+    
+    for(int i = 0; i<5; i++)
+        quiz[i] = 0;
+        
+    average, project_avg, exam_avg, quiz_avg = 0.0;
+    finalExam = 0;
+    grade = " ";
+}
+
+void Student::get_student_scores()
+{
+    try
+    {
+        cout << "\n Enter Student Name: \n";
+        cin.ignore();
+        getline(cin, name);
+                
+        for(int i = 0; i<6; i++)
+        {
+            cout<<"Enter Student project grade #"<<i+1<<":\n";
+            cin>>project[i];
+        }
+
+        for(int i = 0; i<2; i++)
+        {
+            cout<<"Enter Student exam grade #"<<i+1<<":\n";
+            cin>>exam[i];
+        }
+
+        for(int i = 0; i<5; i++)
+        {
+            cout<<"Enter Student quiz grade #"<<i+1<<":\n";
+            cin>>quiz[i];
+        }
+
+        cout << "Enter final exam grade: \n";
+        cin>>finalExam;    
+    }
+    
+    catch(...)
+    {
+        cin.clear(); 
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    
+        cout<<"Error, invalid input entered. \n";
+    }
+    return;
+}
+
+void Student::compute_student_stats()
+{
+    cout<<fixed<<showpoint<<setprecision(2);
+
+    for(int i = 0; i<6; i++)
+        project_avg += project[i]; 
+    project_avg = project_avg/6;
+    cout << "Project Average = " << project_avg << "\n";
+
+    for(int i = 0; i<2; i++)
+        exam_avg += exam[i]; 
+    exam_avg = exam_avg/2;
+    cout << "Exam average = " << exam_avg << "\n";
+    
+    for(int i = 0; i<5; i++)
+        quiz_avg += quiz[i]; 
+    quiz_avg = quiz_avg/5;
+    cout << "Quiz average = " << quiz_avg << "\n";
+        
+    average = (project_avg*0.25) + (exam_avg*0.4) + (quiz_avg*0.1) + (finalExam*0.25);
+    cout << "Semester average = " << average << "\n"; 
+   
+    return;
+}
+
+void Student::determine_student_grade()
+{
+    grade = "0";
+    if(average <= 100 && average >= 93)
+        grade = "A";
+    //range from 92 - 89
+    else if(average >= 89)
+        grade = "A-";
+    //range from 88 - 87
+    else if(average >= 87)
+        grade = "B+";
+    //range from 89 - 83
+    else if(average >= 83)
+        grade = "B";
+    //range from 82 - 79
+    else if(average >= 79)
+        grade = "B-";
+    //range from 78 - 77
+    else if(average >= 77)
+        grade = "C+";
+    //range from 76 - 73
+    else if(average >= 73)
+        grade = "C";
+    //range from 72 - 69
+    else if(average >= 69)
+        grade = "C-";
+    //range from 68 - 67
+    else if(average >= 67)
+        grade = "D+";
+    //range from 66 - 63
+    else if(average >= 63)
+        grade = "D";
+    //range from 62 - 57   
+    else if(average >= 57)
+        grade = "D-";
+    //range below 57    
+    else if(average <= 57)
+        grade = "F";
+        
+    cout << "Letter Grade = " << grade << "\n";
+    return;
+}
+
+void Student::display_student_name_gpa_grade()
+{
+    const int width1 = 19;
+    const int width2 = 17;
+    
+    cout<<fixed<<showpoint<<setprecision(2);
+    cout << "\n" <<"Student = " << name << "\n";
+    cout << "Average = " << average << "\n";
+    cout << "Letter Grade = " << grade << "\n";
+    
+    toFile.open("student.txt",ios::app);
+    toFile<<fixed<<showpoint<<setprecision(2);
+    toFile << "\n" <<"Student = " << name << "\n";
+    toFile << "Average = " << average << "\n";
+    toFile << "Letter Grade = " << grade << "\n";
+    toFile.close();
+    return;
+}
+
+double Student::student_average()
+{
+    return average;
+}
+ 
+
+ 
 Course::Course()
 {
     index_of_highest = 0;
-    index_of_highest = 0;
+    index_of_lowest = 0;
 }
 Course::~Course()
 {
@@ -303,32 +270,95 @@ void Course::evaluate_class()
     for(int i=0; i<7; i++)
     {
         student[i].compute_student_stats();
+        student[i].determine_student_grade();
     }
-
+    return;
 }
 
 void Course::determine_index_of_highest_lowest()
 {
+    int tempHighest = 0; 
+    int tempLowest = 100;
     
+    for(int i=0; i<7; i++)
+    {
+        if(student[i].student_average() > tempHighest)
+        {
+            tempHighest = student[i].student_average();
+            index_of_highest = i;
+        }
+    }
+    
+    for(int i=0; i<7; i++)
+    {
+        if(student[i].student_average() < tempLowest)
+        {
+            tempLowest = student[i].student_average();
+            index_of_lowest = i;
+        }
+    }
+    return;
+}
+
+void Course::display_stats()
+{    
+    for (int i=0; i < 7; i++)
+    {
+        student[i].display_student_name_gpa_grade();
+    }
 }
 
 void Course::display_highest()
 {
-    
-}
-void Course::display_lowest()
-{
-    
+    student[index_of_highest].display_student_name_gpa_grade();
+        return;
 }
 
-void Course::display_stats()
+void Course::display_lowest()
+{    
+    student[index_of_lowest].display_student_name_gpa_grade();
+        return;
+}
+
+void describeProgram()
 {
-    
+    cout<<"This program will serve as a grade book for seven students who are"
+          " participating in a course, \n and will also analyze the performances"
+          "of the students as well. Each student will have six projects (worth 25%"
+          " collectively), \n two midterm exams (worth 20% each), and five quizzes (worth 10%"
+          " collectively), and a final exam (worth 25%). \n The program will calculate"
+          " the class average and will also display the student with the highest"
+          " and lowest grade.";  
 }
 
 int main(int argc, char** argv) 
 {
+    Course courseObj;
     
+    describeProgram();
+    courseObj.get_grades();
+    courseObj.evaluate_class();
+    courseObj.determine_index_of_highest_lowest();
+    
+    toFile.open("student.txt",ios::out);
+    
+    toFile<<fixed<<showpoint<<setprecision(2)<<endl;
+    cout<<fixed<<showpoint<<setprecision(2)<<endl;  
+    
+    courseObj.display_stats();
+    //cout << "\n";
+    //toFile << "\n";
+    
+    cout<<"The name, average, and grade of the best student in the class is:\n";
+    toFile<<"The name, average, and grade of the best student in the class is:\n";	
+    courseObj.display_highest();
+    
+    cout<<"The name, average, and grade of the poorest student in the class is:\n";
+    toFile<<"The name, average, and grade of the poorest student in the class is:\n";
+    courseObj.display_lowest();
+    toFile.close();
+    system("PAUSE");
+
     return 0;
 }
 
